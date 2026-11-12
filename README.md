@@ -20,6 +20,16 @@ compilado. El ejecutable que genera `build.cmd` es solo el lanzador: comprueba q
 todo esté en su sitio y arranca el runtime. No se versiona (no hay binarios en
 git).
 
+## Instalar en un paso
+
+Doble clic en **`Instalar.cmd`**: te pide tu imagen `.iso` y la carpeta donde
+quieres el juego, y hace el resto. Tarda entre 30 y 45 minutos la primera vez y
+necesita conexión a internet. Las herramientas quedan en
+`%LOCALAPPDATA%\ApeEscape3\cache` y puedes borrarlas cuando quieras.
+
+Los pasos, los parámetros (`-Iso`, `-Destino`, `-Cache`, `-Forzar`) y los
+problemas típicos están en [`docs/instalador.md`](docs/instalador.md).
+
 ## Cómo se usa
 
 1. Deja `ApeEscape3.exe` en una carpeta, con `runtime\` y `game\` al lado.
