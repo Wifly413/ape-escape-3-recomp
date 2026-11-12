@@ -3,6 +3,7 @@
 
 #include "args.hpp"
 #include "config.hpp"
+#include "utf8.hpp"
 #include "validate.hpp"
 
 #include <cstdio>
@@ -85,6 +86,12 @@ int main() {
     write_empty(tmp / "runtime" / "ps2run.exe");  // lo quitamos antes: hay que volver a ponerlo
     no_elf.elf = "disc/NO-EXISTE.ELF";
     CHECK(validate(no_elf, tmp.string()).find("NO-EXISTE.ELF") != std::string::npos);
+
+    // --- Tarea 4: conversion de UTF-8 a UTF-16 ---
+    CHECK(to_wide("Programación") == L"Programación");
+    CHECK(to_wide("D:\\games\\ñandú") == L"D:\\games\\ñandú");
+    CHECK(from_wide(to_wide("Ape Escape 3")) == "Ape Escape 3");
+    CHECK(from_wide(to_wide("")) == "");
 
     std::printf("tests: %d checks, %d failures\n", test::checks(), test::failures());
     return test::failures() == 0 ? 0 : 1;
