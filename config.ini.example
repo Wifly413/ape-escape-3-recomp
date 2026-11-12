@@ -1,0 +1,21 @@
+; Configuracion del lanzador de Ape Escape 3.
+; Copia este archivo como config.ini y ajusta la ruta del ISO.
+
+; Ruta completa de la imagen del disco (la que te has descargado o has volcado).
+iso=D:\games\Ape Escape 3 (Europe) (En,Fr,De,Es,It).iso
+
+; Carpetas relativas a la carpeta de este programa.
+runtime=runtime
+game=game
+
+; El ejecutable del juego, dentro de la carpeta 'game'.
+elf=disc/SCES_536.42
+
+; Titulo de la ventana del juego.
+title=Ape Escape 3
+
+; 1 para jugar en 16:9, 0 para el formato original.
+widescreen=0
+
+; 1 para PAL (50 Hz, version europea), 0 para NTSC (60 Hz).
+pal=1
