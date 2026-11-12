@@ -1,0 +1,17 @@
+build/
+tmp/
+runtime/
+game/
+*.iso
+*.exe
+*.res
+*.ps2
+*.obj
+logs/
+shots/
+states/
+.superpowers/
+resources/official-*.png
+resources/*-oficial.ico
+resources/icon-preview.png
+resources/icon-sizes.png
