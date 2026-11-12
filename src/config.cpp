@@ -67,7 +67,7 @@ ConfigResult parse_config(std::string_view text) {
         } else if (key == "pal") {
             result.config.pal = to_bool(value);
         }
-        // 'scale' y cualquier clave que nohers no hacen nada aqui.
+        // 'scale' y cualquier clave desconocida se ignoran aqui.
     }
 
     if (result.config.iso.empty()) {
