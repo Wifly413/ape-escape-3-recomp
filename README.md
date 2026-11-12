@@ -5,7 +5,8 @@ Windows x86-64. Doble clic y a jugar: sin emulador, sin menús de configuración
 gráficos, sin BIOS.
 
 El juego no se emula: se traduce el código de la PS2 a código de PC y se ejecuta
-directamente sobre Direct3D 12. De ahí los 50 fps estables del original PAL.
+directamente sobre la tarjeta gráfica (Direct3D 12 o Vulkan, a través de
+wgpu-native). De ahí los 50 fps estables del original PAL.
 
 ## Qué necesitas
 
@@ -15,8 +16,9 @@ directamente sobre Direct3D 12. De ahí los 50 fps estables del original PAL.
 - El runtime ya compilado (carpeta `runtime`) y los datos del juego (carpeta `game`).
 
 Este repositorio **no incluye** ni el juego, ni la imagen del disco, ni el runtime
-compilado. El `.exe` de este repositorio es solo el lanzador: lo que hace es
-comprobar que todo está en su sitio y arrancar el runtime.
+compilado. El ejecutable que genera `build.cmd` es solo el lanzador: comprueba que
+todo esté en su sitio y arranca el runtime. No se versiona (no hay binarios en
+git).
 
 ## Cómo se usa
 
@@ -44,20 +46,39 @@ cierra en silencio: te dice exactamente qué ruta no encuentra.
 | `widescreen` | `0`                       | `1` para 16:9, `0` para el 4:3 original          |
 | `pal`        | `1`                       | `1` para PAL (50 Hz), `0` para NTSC (60 Hz)      |
 
-Acepta comentarios con `;` o `#`, líneas con `=` o `:`, y no distingue mayúsculas.
+Acepta comentarios con `;` o `#` al principio de la línea, claves separadas con `=`
+o `:`, y no distingue mayúsculas. Los valores no se cortan por `;`, así que una
+ruta con ese carácter funciona. Guarda el archivo en UTF-8 (es lo que hace el
+Bloc de notas por defecto): las rutas se leen como UTF-8.
+
+`iso` puede ser una ruta completa o relativa a la carpeta del `.exe`.
+
 `config.ini.example` es la plantilla.
 
 ## Controles
 
-| Tecla              | Acción                          |
-| ------------------ | ------------------------------- |
-| WASD               | Stick izquierdo                 |
-| Espacio, E, Q, F   | Botones del mando               |
-| Shift              | Stick derecho / segundo mando   |
-| Esc                | Start                           |
-| F1                 | Menú del runtime                |
-| F5 / F8            | Guardado rápido / cargado rápido|
-| F11                | Pantalla completa               |
+| Tecla                    | Acción                       |
+| ------------------------ | ---------------------------- |
+| WASD                     | Stick izquierdo              |
+| I, J, K, L               | Stick derecho                |
+| Espacio / Intro          | Cruz                         |
+| E (o botón central)      | Círculo                      |
+| Clic izquierdo           | Cuadrado                     |
+| Clic derecho             | Triángulo                    |
+| Shift                    | L1                           |
+| F                        | R1                           |
+| Q / R                    | L2 / R2                      |
+| X / C                    | L3 / R3                      |
+| Esc                      | Start                        |
+| Tab                      | Select                       |
+| Ctrl (o botón lateral)   | Roll                         |
+| V                        | Rage                         |
+| F1                       | Menú del runtime             |
+| F5 / F8                  | Guardado rápido / cargado rápido |
+| F11                      | Pantalla completa            |
+
+Los nombres de estas teclas salen de `game\keys.ini`, que el runtime reescribe
+cuando cambias los controles desde su menú.
 
 ## Compilar el lanzador
 
