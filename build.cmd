@@ -28,19 +28,22 @@ rem ---- lanzador ----
 set "SRCS="
 for %%f in (src\*.cpp) do set "SRCS=!SRCS! %%f"
 
-rem El icono: el del proyecto, o el oficial si el usuario lo ha puesto en su maquina.
+rem El icono: el oficial si el usuario lo ha puesto en su maquina, si no el del proyecto.
+rem Se copia a build\ y el .rc incrusta siempre la misma ruta.
 set "ICON=resources\ApeEscape3.ico"
 if exist "resources\ApeEscape3-oficial.ico" set "ICON=resources\ApeEscape3-oficial.ico"
 
 rem El recurso se genera solo si hay icono.
 set "RES="
-if exist "%ICON%" (
-    "%LLVM_MINGW%\bin\windres.exe" resources\launcher.rc -I resources -O coff -o build\launcher.res
+if exist "!ICON!" (
+    copy /y "!ICON!" build\launcher.ico >nul
+    if errorlevel 1 exit /b 1
+    "!LLVM_MINGW!\bin\windres.exe" -I build resources\launcher.rc -O coff -o build\launcher.res
     if errorlevel 1 exit /b 1
     set "RES=build\launcher.res"
 )
 
-%CXX% -std=c++20 -O2 -Wall -Wextra -mwindows -static -I src -o ApeEscape3.exe !SRCS! !RES!
+"!CXX!" -std=c++20 -O2 -Wall -Wextra -mwindows -static -I src -o ApeEscape3.exe !SRCS! !RES!
 if errorlevel 1 exit /b 1
 echo Construido ApeEscape3.exe
 exit /b 0
@@ -51,7 +54,7 @@ set "SRCS="
 for %%f in (src\*.cpp) do (
     if /I not "%%~nxf"=="main.cpp" set "SRCS=!SRCS! %%f"
 )
-%CXX% -std=c++20 -O1 -Wall -Wextra -static -I src -o build\tests.exe tests\tests.cpp !SRCS!
+"!CXX!" -std=c++20 -O1 -Wall -Wextra -static -I src -o build\tests.exe tests\tests.cpp !SRCS!
 if errorlevel 1 exit /b 1
 build\tests.exe
 exit /b %errorlevel%

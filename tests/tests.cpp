@@ -3,6 +3,7 @@
 
 #include "args.hpp"
 #include "config.hpp"
+#include "fileio.hpp"
 #include "utf8.hpp"
 #include "validate.hpp"
 
@@ -16,6 +17,12 @@ namespace {
 void write_empty(const std::filesystem::path& path) {
     std::ofstream file(path, std::ios::binary);
     file << "";
+}
+
+// La ruta tal y como la guarda el programa: UTF-8.
+std::string utf8_of(const std::filesystem::path& path) {
+    const std::u8string text = path.u8string();
+    return std::string(text.begin(), text.end());
 }
 
 }  // namespace
@@ -92,6 +99,36 @@ int main() {
     CHECK(to_wide("D:\\games\\ñandú") == L"D:\\games\\ñandú");
     CHECK(from_wide(to_wide("Ape Escape 3")) == "Ape Escape 3");
     CHECK(from_wide(to_wide("")) == "");
+
+    // --- Revision final: rutas con espacios y con acentos ---
+    // El .exe puede estar en "D:\Proyectos Programacion": si su ruta no va
+    // entrecomillada, Windows parte la linea y los argumentos se desplazan.
+    const std::string spaced = join_command_line("C:\\carpeta con espacio\\ps2run.exe", a);
+    CHECK(spaced.rfind("\"C:\\carpeta con espacio\\ps2run.exe\" ", 0) == 0);
+    CHECK(join_command_line("C:\\rt\\ps2run.exe", a).rfind("C:\\rt\\ps2run.exe ", 0) == 0);
+
+    // Las rutas internas son UTF-8; el sistema de archivos no entiende de ANSI.
+    const auto acentos = tmp / "Programaci\u00f3n";
+    std::filesystem::create_directories(acentos / "runtime");
+    std::filesystem::create_directories(acentos / "game" / "disc");
+    {
+        std::ofstream file(acentos / "iso.txt", std::ios::binary);
+        file << "hola";
+    }
+    write_empty(acentos / "runtime" / "ps2run.exe");
+    write_empty(acentos / "game" / "disc" / "SCES_536.42");
+
+    const std::string acentos_utf8 = utf8_of(acentos);
+    CHECK(file_exists(acentos_utf8 + "\\iso.txt"));
+    CHECK(!file_exists(acentos_utf8 + "\\no-existe.txt"));
+    std::string content;
+    CHECK(read_file(acentos_utf8 + "\\iso.txt", content));
+    CHECK(content == "hola");
+    CHECK(!read_file(acentos_utf8 + "\\no-existe.txt", content));
+
+    Config acentuado;
+    acentuado.iso = acentos_utf8 + "\\iso.txt";
+    CHECK(validate(acentuado, acentos_utf8).empty());
 
     std::printf("tests: %d checks, %d failures\n", test::checks(), test::failures());
     return test::failures() == 0 ? 0 : 1;

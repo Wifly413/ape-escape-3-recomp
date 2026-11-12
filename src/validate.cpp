@@ -1,6 +1,6 @@
 #include "validate.hpp"
 
-#include <filesystem>
+#include "fileio.hpp"
 
 namespace {
 
@@ -20,8 +20,7 @@ std::string join(const std::string& base, const std::string& path) {
 }
 
 bool exists(const std::string& path) {
-    std::error_code ec;
-    return std::filesystem::exists(std::filesystem::path(path), ec);
+    return file_exists(path);
 }
 
 }  // namespace

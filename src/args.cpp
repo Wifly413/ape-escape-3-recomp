@@ -49,7 +49,10 @@ std::vector<std::string> build_arguments(const Config& c, std::string_view elf_p
 }
 
 std::string join_command_line(std::string_view exe, const std::vector<std::string>& args) {
-    std::string line(exe);
+    // El programa tambien se entrecomilla: si la carpeta tiene espacios
+    // ("D:\Proyectos Programacion"), Windows partiria la ruta y desplazaria
+    // todos los argumentos.
+    std::string line = quote_argument(exe);
     for (const std::string& arg : args) {
         line.push_back(' ');
         line += quote_argument(arg);
