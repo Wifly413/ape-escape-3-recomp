@@ -33,8 +33,9 @@ std::string resolve(const std::string& base_dir, const std::string& path) {
 
 std::string validate(const Config& c, const std::string& base_dir) {
     if (c.iso.empty()) return "config.ini: falta la clave iso";
-    if (!exists(c.iso)) {
-        return "No se encuentra el ISO del juego:\n" + c.iso +
+    const std::string iso = resolve(base_dir, c.iso);
+    if (!exists(iso)) {
+        return "No se encuentra el ISO del juego:\n" + iso +
                "\n\nCambia la clave 'iso' del config.ini por la ruta de tu imagen del disco.";
     }
 

@@ -94,6 +94,13 @@ int main() {
     no_elf.elf = "disc/NO-EXISTE.ELF";
     CHECK(validate(no_elf, tmp.string()).find("NO-EXISTE.ELF") != std::string::npos);
 
+    // Un ISO relativo se resuelve contra la carpeta del .exe, no contra el
+    // directorio desde el que se lanzo el programa.
+    write_empty(tmp / "otra-imagen.iso");
+    Config iso_relativo;
+    iso_relativo.iso = "otra-imagen.iso";
+    CHECK(validate(iso_relativo, tmp.string()).empty());
+
     // --- Tarea 4: conversion de UTF-8 a UTF-16 ---
     CHECK(to_wide("Programación") == L"Programación");
     CHECK(to_wide("D:\\games\\ñandú") == L"D:\\games\\ñandú");

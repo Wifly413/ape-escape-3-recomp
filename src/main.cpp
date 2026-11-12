@@ -61,9 +61,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     }
 
     std::string text;
-    if (!read_file(base + "\\config.ini", text)) {
-        show_error("Falta config.ini junto a ApeEscape3.exe.\n\nSe espera un archivo config.ini "
-                   "en la misma carpeta que este programa.");
+    const std::string config_path = base + "\\config.ini";
+    if (!read_file(config_path, text)) {
+        if (file_exists(config_path)) {
+            show_error("No se puede leer config.ini:\n" + config_path +
+                       "\n\nExiste, pero Windows no deja abrirlo. Comprueba que no lo tenga "
+                       "abierto otro programa y que tengas permiso para leerlo.");
+        } else {
+            show_error("Falta config.ini junto a ApeEscape3.exe.\n\nSe espera un archivo "
+                       "config.ini en la misma carpeta que este programa.");
+        }
         return 1;
     }
 
@@ -73,14 +80,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         return 1;
     }
 
-    const std::string problem = validate(parsed.config, base);
+    // La ruta del ISO se resuelve ya contra la carpeta del .exe para que
+    // valga igual desde el Explorador que desde un acceso directo.
+    Config config = parsed.config;
+    config.iso = resolve(base, config.iso);
+
+    const std::string problem = validate(config, base);
     if (!problem.empty()) {
         show_error(problem);
         return 1;
     }
 
     std::string error;
-    if (!launch(parsed.config, base, error)) {
+    if (!launch(config, base, error)) {
         show_error(error);
         return 1;
     }
