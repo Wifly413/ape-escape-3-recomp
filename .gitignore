@@ -1,17 +1,25 @@
+# Artefactos de compilación
 build/
-tmp/
+*.obj
+*.res
+*.exe
+*.pdb
+
+# El juego no se versiona: es de Sony
 runtime/
 game/
 *.iso
-*.exe
-*.res
 *.ps2
-*.obj
 logs/
 shots/
 states/
-.superpowers/
+
+# Material con derechos: el logo oficial de Sony, solo en local
 resources/official-*.png
 resources/*-oficial.ico
 resources/icon-preview.png
 resources/icon-sizes.png
+
+# Restos de herramientas y del plan
+tmp/
+.superpowers/
