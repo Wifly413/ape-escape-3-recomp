@@ -3,8 +3,21 @@
 
 #include "args.hpp"
 #include "config.hpp"
+#include "validate.hpp"
 
 #include <cstdio>
+#include <filesystem>
+#include <fstream>
+#include <string>
+
+namespace {
+
+void write_empty(const std::filesystem::path& path) {
+    std::ofstream file(path, std::ios::binary);
+    file << "";
+}
+
+}  // namespace
 
 int main() {
     CHECK(parse_config("iso=D:\\games\\a.iso\n").config.iso == "D:\\games\\a.iso");
@@ -41,6 +54,37 @@ int main() {
     CHECK(line.find("\"D:\\games\\Ape Escape 3 (Europe) (En,Fr,De,Es,It).iso\"") != std::string::npos);
     CHECK(line.find("--widescreen") != std::string::npos);
     CHECK(line.find("--pal") != std::string::npos);
+
+    // --- Tarea 3: rutas y comprobaciones antes de arrancar ---
+    CHECK(resolve("C:\\a", "runtime") == "C:\\a\\runtime");
+    CHECK(resolve("C:\\a\\", "runtime") == "C:\\a\\runtime");
+    CHECK(resolve("C:\\a", "C:\\abs") == "C:\\abs");
+    CHECK(resolve("C:\\a", "game\\disc\\SCES_536.42") == "C:\\a\\game\\disc\\SCES_536.42");
+
+    const auto tmp = std::filesystem::temp_directory_path() / "ape3-launcher-tests";
+    std::filesystem::remove_all(tmp);
+    std::filesystem::create_directories(tmp / "runtime");
+    std::filesystem::create_directories(tmp / "game" / "disc");
+    write_empty(tmp / "a.iso");
+    write_empty(tmp / "runtime" / "ps2run.exe");
+    write_empty(tmp / "game" / "disc" / "SCES_536.42");
+
+    Config ok;
+    ok.iso = (tmp / "a.iso").string();
+    CHECK(validate(ok, tmp.string()).empty());
+
+    Config no_iso = ok;
+    no_iso.iso = (tmp / "no-existe.iso").string();
+    CHECK(validate(no_iso, tmp.string()).find("ISO") != std::string::npos);
+
+    Config no_runtime = ok;
+    std::filesystem::remove(tmp / "runtime" / "ps2run.exe");
+    CHECK(validate(no_runtime, tmp.string()).find("runtime") != std::string::npos);
+
+    Config no_elf = ok;
+    write_empty(tmp / "runtime" / "ps2run.exe");  // lo quitamos antes: hay que volver a ponerlo
+    no_elf.elf = "disc/NO-EXISTE.ELF";
+    CHECK(validate(no_elf, tmp.string()).find("NO-EXISTE.ELF") != std::string::npos);
 
     std::printf("tests: %d checks, %d failures\n", test::checks(), test::failures());
     return test::failures() == 0 ? 0 : 1;
