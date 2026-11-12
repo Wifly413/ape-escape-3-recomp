@@ -30,10 +30,21 @@ necesita conexión a internet. Las herramientas quedan en
 Los pasos, los parámetros (`-Iso`, `-Destino`, `-Cache`, `-Forzar`) y los
 problemas típicos están en [`docs/instalador.md`](docs/instalador.md).
 
-## Cómo se usa
+## Jugar
+
+Doble clic en **`Jugar a Ape Escape 3`** (el acceso directo que deja el instalador)
+o en `ApeEscape3.exe`. No hay nada más que configurar: el instalador ya escribió el
+`config.ini` con la ruta de la imagen que elegiste en el diálogo.
+
+Si falta algo, el lanzador lo dice con un cuadro de diálogo en español y no se
+cierra en silencio: te dice exactamente qué ruta no encuentra.
+
+## Hacerlo a mano (solo sin instalador)
+
+Para quien ya tiene `runtime\` y `game\` de antes:
 
 1. Deja `ApeEscape3.exe` en una carpeta, con `runtime\` y `game\` al lado.
-2. Abre `config.ini` y pon en `iso=` la ruta completa de tu imagen:
+2. Copia `config.ini.example` como `config.ini` y pon en `iso=` la ruta de tu imagen:
 
    ```ini
    iso=D:\games\Ape Escape 3 (Europe) (En,Fr,De,Es,It).iso
@@ -41,14 +52,11 @@ problemas típicos están en [`docs/instalador.md`](docs/instalador.md).
 
 3. Doble clic en `ApeEscape3.exe`.
 
-Si falta algo, el lanzador lo dice con un cuadro de diálogo en español y no se
-cierra en silencio: te dice exactamente qué ruta no encuentra.
-
 ## El `config.ini`
 
 | Clave        | Por defecto               | Para qué                                        |
 | ------------ | ------------------------- | ----------------------------------------------- |
-| `iso`        | *(obligatoria)*           | Ruta completa de la imagen del disco            |
+| `iso`        | *(la escribe el instalador)* | Ruta de la imagen del disco                  |
 | `runtime`    | `runtime`                 | Carpeta del runtime, relativa al `.exe`         |
 | `game`       | `game`                    | Carpeta con los datos del juego                 |
 | `elf`        | `disc/SCES_536.42`        | Ejecutable del juego, dentro de `game`          |
@@ -64,6 +72,10 @@ Bloc de notas por defecto): las rutas se leen como UTF-8.
 `iso` puede ser una ruta completa o relativa a la carpeta del `.exe`.
 
 `config.ini.example` es la plantilla.
+
+**No hace falta editar este archivo a mano** si instalas con `Instalar.cmd`: lo
+escribe él, con la ruta que elegiste en el diálogo. Solo lo tocas si luego mueves el
+ISO de sitio, o si quieres cambiar `widescreen` y `pal`.
 
 ## Controles
 
