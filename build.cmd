@@ -27,7 +27,20 @@ if /I "%MODE%"=="test" goto test
 rem ---- lanzador ----
 set "SRCS="
 for %%f in (src\*.cpp) do set "SRCS=!SRCS! %%f"
-%CXX% -std=c++20 -O2 -Wall -Wextra -mwindows -static -I src -o ApeEscape3.exe !SRCS!
+
+rem El icono: el del proyecto, o el oficial si el usuario lo ha puesto en su maquina.
+set "ICON=resources\ApeEscape3.ico"
+if exist "resources\ApeEscape3-oficial.ico" set "ICON=resources\ApeEscape3-oficial.ico"
+
+rem El recurso se genera solo si hay icono.
+set "RES="
+if exist "%ICON%" (
+    "%LLVM_MINGW%\bin\windres.exe" resources\launcher.rc -I resources -O coff -o build\launcher.res
+    if errorlevel 1 exit /b 1
+    set "RES=build\launcher.res"
+)
+
+%CXX% -std=c++20 -O2 -Wall -Wextra -mwindows -static -I src -o ApeEscape3.exe !SRCS! !RES!
 if errorlevel 1 exit /b 1
 echo Construido ApeEscape3.exe
 exit /b 0
