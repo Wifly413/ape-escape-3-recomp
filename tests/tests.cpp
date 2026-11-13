@@ -137,6 +137,27 @@ int main() {
     acentuado.iso = acentos_utf8 + "\\iso.txt";
     CHECK(validate(acentuado, acentos_utf8).empty());
 
+    // --- El selector del ISO: se reescribe la linea 'iso=' y nada mas ---
+    CHECK(set_iso_line("iso=a\r\npal=1\r\n", "D:\\b.iso") == "iso=D:\\b.iso\r\npal=1\r\n");
+    CHECK(set_iso_line("; com\r\nISO : viejo\r\npal=1\r\n", "D:\\b.iso") ==
+          "; com\r\niso=D:\\b.iso\r\npal=1\r\n");                       // mayusculas y ':' valen
+    CHECK(set_iso_line("pal=1\niso=a\n", "D:\\b.iso") == "pal=1\niso=D:\\b.iso\n");  // LF se conserva
+    CHECK(set_iso_line("pal=1\r\n", "D:\\b.iso") == "pal=1\r\niso=D:\\b.iso\r\n"); // se anade
+    CHECK(set_iso_line("iso=a", "D:\\b.iso") == "iso=D:\\b.iso");            // sin salto final
+    CHECK(set_iso_line("\xEF\xBB\xBFiso=a\r\n", "D:\\b.iso") == "\xEF\xBB\xBFiso=D:\\b.iso\r\n");
+    CHECK(set_iso_line("; iso=no es clave\r\niso=a\r\n", "D:\\b.iso") ==
+          "; iso=no es clave\r\niso=D:\\b.iso\r\n");                     // el comentario se queda
+    CHECK(parse_config(set_iso_line("iso=a\r\n", "D:\\juego " + std::string("\xC3\xB1") + ".iso"))
+              .config.iso == "D:\\juego \xC3\xB1.iso");                     // ida y vuelta en UTF-8
+
+    // write_file, para que la ruta nueva quede guardada.
+    const std::string ida_vuelta = utf8_of(tmp / "config-ida-vuelta.ini");
+    CHECK(write_file(ida_vuelta, "iso=x\r\n"));
+    std::string guardado;
+    CHECK(read_file(ida_vuelta, guardado));
+    CHECK(guardado == "iso=x\r\n");
+    CHECK(!write_file(utf8_of(tmp / "no-existe" / "x.ini"), "iso=x"));
+
     std::printf("tests: %d checks, %d failures\n", test::checks(), test::failures());
     return test::failures() == 0 ? 0 : 1;
 }
