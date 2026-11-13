@@ -36,6 +36,9 @@ Doble clic en **`Jugar a Ape Escape 3`** (el acceso directo que deja el instalad
 o en `ApeEscape3.exe`. No hay nada más que configurar: el instalador ya escribió el
 `config.ini` con la ruta de la imagen que elegiste en el diálogo.
 
+Si algún día mueves o renombras el ISO, el lanzador te lo pide con un diálogo la
+próxima vez, guarda la ruta nueva y arranca. Nunca hay que editar el archivo a mano.
+
 Si falta algo, el lanzador lo dice con un cuadro de diálogo en español y no se
 cierra en silencio: te dice exactamente qué ruta no encuentra.
 
@@ -73,9 +76,9 @@ Bloc de notas por defecto): las rutas se leen como UTF-8.
 
 `config.ini.example` es la plantilla.
 
-**No hace falta editar este archivo a mano** si instalas con `Instalar.cmd`: lo
-escribe él, con la ruta que elegiste en el diálogo. Solo lo tocas si luego mueves el
-ISO de sitio, o si quieres cambiar `widescreen` y `pal`.
+**No hace falta editar este archivo a mano**: lo escribe el instalador con la ruta que
+elegiste, y si luego mueves el ISO el propio lanzador te lo vuelve a preguntar y lo
+reescribe. Solo lo tocas para cambiar `widescreen` o `pal`.
 
 ## Controles
 

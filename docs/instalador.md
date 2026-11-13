@@ -149,8 +149,10 @@ arregla, y lo que ya estaba hecho no se repite.
 
 **La imagen se ha movido después de instalar.** El `config.ini` de la carpeta
 destino guarda la ruta completa de la imagen que elegiste. Si la mueves o la renombras,
-el lanzador no la encuentra. Tienes dos salidas: abrir `<destino>\config.ini` y
-corregir la línea `iso=`, o volver a ejecutar el instalador con la ruta nueva.
+el lanzador se da cuenta al arrancar y abre el mismo diálogo para que elijas la imagen
+otra vez; al elegirla guarda la ruta nueva en el `config.ini` y arranca. No hay que
+editar nada ni volver a ejecutar el instalador. Si cancelas el diálogo, verás el aviso
+en español con la ruta que falta y podrás reintentarlo con otro doble clic.
 
 **Cancelar sin romper nada.** Cerrar la ventana o pulsar Ctrl+C no deja nada que
 estorbe: al volver a ejecutarlo, lo que ya estaba descargado no se descarga otra vez y
