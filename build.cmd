@@ -43,7 +43,9 @@ if exist "!ICON!" (
     set "RES=build\launcher.res"
 )
 
-"!CXX!" -std=c++20 -O2 -Wall -Wextra -mwindows -static -I src -o ApeEscape3.exe !SRCS! !RES!
+rem El selector de archivos (src\picker.cpp) usa el dialogo de Windows: comdlg32 y ole32
+rem no las enlaza el toolchain por su cuenta.
+"!CXX!" -std=c++20 -O2 -Wall -Wextra -mwindows -static -I src -o ApeEscape3.exe !SRCS! !RES! -lcomdlg32 -lole32
 if errorlevel 1 exit /b 1
 echo Construido ApeEscape3.exe
 exit /b 0
@@ -54,7 +56,7 @@ set "SRCS="
 for %%f in (src\*.cpp) do (
     if /I not "%%~nxf"=="main.cpp" set "SRCS=!SRCS! %%f"
 )
-"!CXX!" -std=c++20 -O1 -Wall -Wextra -static -I src -o build\tests.exe tests\tests.cpp !SRCS!
+"!CXX!" -std=c++20 -O1 -Wall -Wextra -static -I src -o build\tests.exe tests\tests.cpp !SRCS! -lcomdlg32 -lole32
 if errorlevel 1 exit /b 1
 build\tests.exe
 exit /b %errorlevel%

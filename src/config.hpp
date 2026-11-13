@@ -24,3 +24,8 @@ struct ConfigResult {
 // Lee un config.ini. Acepta BOM UTF-8, CRLF, lineas vacias y comentarios con ';' o '#'.
 // Las claves se pueden escribir con '=' o ':', y no distinguen mayusculas.
 ConfigResult parse_config(std::string_view text);
+
+// Devuelve el texto de un config.ini con la linea de 'iso' puesta a iso_path. Conserva
+// comentarios, el resto de claves, el BOM y los saltos de linea que ya tuviera; si no
+// habia linea de 'iso', la anade al final.
+std::string set_iso_line(std::string_view text, std::string_view iso_path);

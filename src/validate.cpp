@@ -36,7 +36,9 @@ std::string validate(const Config& c, const std::string& base_dir) {
     const std::string iso = resolve(base_dir, c.iso);
     if (!exists(iso)) {
         return "No se encuentra el ISO del juego:\n" + iso +
-               "\n\nCambia la clave 'iso' del config.ini por la ruta de tu imagen del disco.";
+               "\n\nAl arrancar, el lanzador pregunta por la imagen con un dialogo: si lo has "
+               "cancelado, vuelve a abrirlo con doble clic. Tambien puedes poner la ruta en la "
+               "clave 'iso' del config.ini.";
     }
 
     const std::string runtime = resolve(base_dir, c.runtime) + "\\ps2run.exe";

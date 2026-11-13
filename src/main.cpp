@@ -7,6 +7,7 @@
 #include "config.hpp"
 #include "fileio.hpp"
 #include "launch.hpp"
+#include "picker.hpp"
 #include "utf8.hpp"
 #include "validate.hpp"
 
@@ -84,6 +85,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     // valga igual desde el Explorador que desde un acceso directo.
     Config config = parsed.config;
     config.iso = resolve(base, config.iso);
+
+    // Si la imagen ya no esta donde decia el config.ini (la movieron, la renombraron o
+    // cambio la letra de la unidad), se pregunta por ella en vez de rendirse, y la ruta
+    // nueva se guarda para la proxima vez: nadie tiene que editar el archivo a mano.
+    if (!config.iso.empty() && !file_exists(config.iso)) {
+        const std::string chosen = choose_iso(config.iso);
+        if (!chosen.empty()) {
+            config.iso = chosen;
+            // Si no se puede escribir (carpeta de solo lectura) se juega igual y se
+            // volvera a preguntar la proxima vez; no se molesta con otro cuadro.
+            static_cast<void>(write_file(config_path, set_iso_line(text, chosen)));
+        }
+    }
 
     const std::string problem = validate(config, base);
     if (!problem.empty()) {

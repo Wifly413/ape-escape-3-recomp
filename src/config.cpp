@@ -76,3 +76,62 @@ ConfigResult parse_config(std::string_view text) {
     }
     return result;
 }
+
+std::string set_iso_line(std::string_view text, std::string_view iso_path) {
+    std::string out;
+    std::size_t pos = 0;
+
+    // El BOM UTF-8 se conserva: Notepad lo pone y el parser lo acepta.
+    if (text.size() >= 3 && static_cast<unsigned char>(text[0]) == 0xEF &&
+        static_cast<unsigned char>(text[1]) == 0xBB && static_cast<unsigned char>(text[2]) == 0xBF) {
+        out.append(text.substr(0, 3));
+        pos = 3;
+    }
+
+    bool replaced = false;
+    while (pos < text.size()) {
+        const std::size_t newline = text.find('\n', pos);
+        const std::size_t stop = newline == std::string_view::npos ? text.size() : newline + 1;
+        const std::string_view raw = text.substr(pos, stop - pos);
+
+        // Cuerpo de la linea sin el salto, para poder devolverlo tal cual si no es la
+        // clave que buscamos.
+        std::string_view body = raw;
+        std::string eol;
+        if (!body.empty() && body.back() == '\n') {
+            body.remove_suffix(1);
+            eol = "\n";
+            if (!body.empty() && body.back() == '\r') {
+                body.remove_suffix(1);
+                eol = "\r\n";
+            }
+        }
+
+        const std::string_view trimmed = trim(body);
+        bool is_iso = false;
+        if (!trimmed.empty() && trimmed.front() != ';' && trimmed.front() != '#') {
+            const std::size_t sep = trimmed.find_first_of("=:");
+            if (sep != std::string_view::npos && lower(trim(trimmed.substr(0, sep))) == "iso") {
+                is_iso = true;
+            }
+        }
+
+        if (is_iso && !replaced) {
+            out += "iso=";
+            out += iso_path;
+            out += eol;
+            replaced = true;
+        } else {
+            out.append(raw);
+        }
+        pos = stop;
+    }
+
+    if (!replaced) {
+        if (!out.empty() && out.back() != '\n') out += "\r\n";
+        out += "iso=";
+        out += iso_path;
+        out += "\r\n";
+    }
+    return out;
+}

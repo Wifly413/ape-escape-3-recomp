@@ -23,3 +23,10 @@ bool read_file(const std::string& utf8_path, std::string& out) {
     out = buffer.str();
     return true;
 }
+
+bool write_file(const std::string& utf8_path, std::string_view text) {
+    std::ofstream file(to_path(utf8_path), std::ios::binary | std::ios::trunc);
+    if (!file) return false;
+    file.write(text.data(), static_cast<std::streamsize>(text.size()));
+    return file.good();
+}

@@ -13,3 +13,6 @@ bool file_exists(const std::string& utf8_path);
 
 // Lee el archivo entero. Devuelve false si no se puede abrir.
 bool read_file(const std::string& utf8_path, std::string& out);
+
+// Escribe el archivo entero (UTF-8 tal cual, sin BOM anadido). False si no se puede.
+bool write_file(const std::string& utf8_path, std::string_view text);
